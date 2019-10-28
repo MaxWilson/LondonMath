@@ -20,6 +20,7 @@ type SettingChange =
     | MathBase of MathBase
     | Operation of MathType
     | Maximum of int
+    | FeedbackDuration of int
 type Message =
     | Reset
     | ToggleOptions
@@ -72,6 +73,7 @@ let viewOptions (settings:Settings) dispatch =
         setting "Base" settings.mathBase MathBase ["Binary", Binary; "Decimal", Decimal; "Hexadecimal", Hex]
         setting "Operation" settings.mathType Operation ["+", Plus; "−", Minus; "×", Times; "÷", Divide]
         maxSlider
+        setting "Feedback duration" settings.feedbackDuration FeedbackDuration ["None", 0; "Short", 300; "Medium", 1000; "Long", 5000]
         button [ClassName "optionDoneButton"; OnClick (delay1 dispatch ToggleOptions)][unbox "OK"]
         ]
 

@@ -11,6 +11,9 @@ open View
 
 let init _ = Game.Fresh(), Cmd.none
 
+[<Emit("setTimeout($1, $0)")>]
+let setTimeout ms callback = jsNative
+
 module Sounds =
     open Browser.Types
     [<Emit("new Audio($0)")>]
@@ -51,7 +54,7 @@ let update msg model =
     | AnswerKey k ->
         if model.showOptions && k = Enter then
             model, Cmd.ofMsg ToggleOptions
-        elif model.showOptions || not (Model.Enums.keysOf model.settings.mathBase |> Array.exists ((=) k)) then
+        elif model.messageToUser.IsSome || model.showOptions || not (Model.Enums.keysOf model.settings.mathBase |> Array.exists ((=) k)) then
             model, Cmd.none
         else
             match k with
@@ -69,7 +72,23 @@ let update msg model =
                     match model.settings.sound with
                     | On | BombOnly -> bomb
                     | _ -> ignore
-                Game.TryAdvance model onCorrect onIncorrect, Cmd.none
+                let feedback color =
+                    if model.settings.feedbackDuration > 0 then
+                       Cmd.ofSub(fun d ->
+                            d <| UserMessage(Some {| color = color; msg = sprintf "%s = %s" model.problem.question model.problem.answer |})
+                            setTimeout model.settings.feedbackDuration (fun () -> d (UserMessage None))
+                            )
+                    else
+                        Cmd.none
+                match Game.Evaluate model with
+                | Correct, m ->
+                    onCorrect()
+                    m |> Game.nextProblem, feedback "green"
+                | Incorrect, m ->
+                    onIncorrect()
+                    m |> Game.nextProblem, feedback "red"
+                | NotReady, m ->
+                    m, Cmd.none
             | HintKey ->
                 { model with showHints = not model.showHints }, Cmd.none
     | Setting msg ->
@@ -82,6 +101,7 @@ let update msg model =
             | SettingChange.MathBase v -> { settings with mathBase = v }
             | SettingChange.Operation v -> { settings with mathType = v }
             | SettingChange.Maximum v -> { settings with size = v }
+            | SettingChange.FeedbackDuration v -> { settings with feedbackDuration = v }
         match msg with
         | Operation _ | Maximum _ | MathBase _ ->
             { model with settings = settings'; cells = Model.ComputeHints settings'; reviewList = [] } |> Game.nextProblem, Cmd.none
