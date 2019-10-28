@@ -31,6 +31,7 @@ module Sounds =
     let bomb =
         let s = sound("London8.mp3")
         let s = sound("London9.mp3")
+        let s = sound("London13.mp3")
         delay1 play s
 open Sounds
 
