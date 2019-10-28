@@ -131,7 +131,7 @@ type Game = {
     problem: {| lhs: int; rhs: int; question: string; answer: string |}
     score: int
     currentAnswer: string
-    messageToUser: string option
+    messageToUser: {| color: string; msg: string |} option
     showOptions: bool
     showHints: bool
     } with

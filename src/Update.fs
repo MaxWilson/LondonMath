@@ -16,12 +16,10 @@ module Sounds =
     [<Emit("new Audio($0)")>]
     let sound file : HTMLAudioElement = jsNative
     let private cheers = [|
-                    sound("1_person_cheering-Jett_Rifkin-1851518140.mp3")
-                    sound("Cheer1.m4a")
-                    sound("Cheer2.m4a")
-                    sound("Cheer4.m4a")
-                    sound("Cheer5.m4a")
-                    sound("Cheer6.m4a")
+                    sound("London1.mp3")
+                    sound("London10.mp3")
+                    sound("London6.mp3")
+                    sound("London7.mp3")
                     |]
     let play (sound: HTMLAudioElement) =
         if sound.ended then sound.play()
@@ -31,12 +29,15 @@ module Sounds =
     let cheer() =
         chooseRandom cheers |> play
     let bomb =
-        let s = sound("Grenade Explosion-SoundBible.com-2100581469.mp3")
+        let s = sound("London8.mp3")
+        let s = sound("London9.mp3")
         delay1 play s
 open Sounds
 
 let update msg model =
     match msg with
+    | UserMessage msg ->
+        { model with messageToUser = msg }, Cmd.none
     | ToggleOptions ->
         let showOptions = not model.showOptions
         if not showOptions then // done button was hit, so persist settings
