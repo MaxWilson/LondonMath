@@ -1,6 +1,6 @@
 # BadarniMath
 
-BadarniMath is a simple game for practicing arithmetic. Play it now [here](https://maxwilson.github.io/BMath/).
+LondonMath is a spooky game for practicing arithmetic. Play it now [here](https://maxwilson.github.io/LondonMath/).
 
 Written with [Fable](https://fable-compiler.github.io/) and [React](https://facebook.github.io/react/).
 
