@@ -28,11 +28,13 @@ module Sounds =
             sound.play()
     let cheer() =
         chooseRandom cheers |> play
-    let bomb =
-        let s = sound("London8.mp3")
-        let s = sound("London9.mp3")
-        let s = sound("London13.mp3")
-        delay1 play s
+    let private bombs = [|
+        sound("London8.mp3")
+        sound("London9.mp3")
+        sound("London13.m4a") |]
+    let bomb() =
+        let s = chooseRandom bombs
+        play s
 open Sounds
 
 let update msg model =
